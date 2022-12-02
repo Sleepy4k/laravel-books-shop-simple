@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookController;
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\TransactionController;
 
 /*
@@ -33,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function() {
     // User Route
     Route::prefix('user')->group(function() {
         Route::get('account', [AccountController::class, 'index']);
+        Route::post('payment', [PaymentController::class, 'store']);
         Route::apiResource('book', BookController::class, ['only' => ['index','show']]);
         Route::apiResource('transaction', TransactionController::class, ['only' => ['index','show']]);
     });
