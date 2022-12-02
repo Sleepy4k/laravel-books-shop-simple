@@ -11,11 +11,19 @@ class TransactionController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::get();
+        $transactions = [];
+        $user = $request->user();
+
+        if ($user->is_admin == 'true') {
+            $transactions = Transaction::latest()->get();
+        } elseif ($user->is_admin == 'false') {
+            $transactions = Transaction::where('user_id', $user->id)->latest()->get();
+        }
 
         if (count($transactions) > 0) {
             return response()->json([
@@ -42,6 +50,15 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $validator = validator($request->all(), [
             'user_id' => ['required','numeric'],
             'book_id' => ['required','numeric'],
@@ -78,10 +95,11 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $transaction = Transaction::find($id);
 
@@ -91,6 +109,23 @@ class TransactionController extends Controller
                 'status' => 'error',
                 'message' => 'transaction not found in our database'
             ], 404);
+        }
+
+        if ($request->user()->is_admin == 'false') {
+            if ($transaction->user_id == $request->user()->id) {
+                return response()->json([
+                    'code' => 206,
+                    'status' => 'success',
+                    'message' => 'data successfully accepted',
+                    'data' => $transaction
+                ], 206);
+            }
+
+            return response()->json([
+                'code' => 403,
+                'status' => 'error',
+                'message' => 'transaction data is not yours'
+            ], 403);
         }
 
         return response()->json([
@@ -110,6 +145,15 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $validator = validator($request->all(), [
             'user_id' => ['nullable','numeric'],
             'book_id' => ['nullable','numeric'],
@@ -156,11 +200,21 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $transaction = Transaction::find($id);
         
         if (!$transaction) {

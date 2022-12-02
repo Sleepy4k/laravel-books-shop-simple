@@ -11,10 +11,20 @@ class AccountController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $users = User::get();
 
         if (count($users) > 0) {
@@ -42,6 +52,14 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated Access'
+            ], 401);
+        }
+
         $validator = validator($request->all(), [
             'username' => ['required','string','max:255','unique:users,username'],
             'email' => ['required','string','max:255','unique:users,email'],
@@ -75,10 +93,19 @@ class AccountController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated Access'
+            ], 401);
+        }
+
         $user = User::find($id);
 
         if (!$user) {
@@ -106,6 +133,14 @@ class AccountController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated Access'
+            ], 401);
+        }
+
         $validator = validator($request->all(), [
             'username' => ['nullable','string','max:255','unique:users,username'],
             'email' => ['nullable','string','max:255','unique:users,email']
@@ -143,11 +178,20 @@ class AccountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated Access'
+            ], 401);
+        }
+
         $user = User::find($id);
 
         if (!$user) {
