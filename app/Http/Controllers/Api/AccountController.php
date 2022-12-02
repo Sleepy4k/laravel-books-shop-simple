@@ -43,7 +43,6 @@ class AccountController extends Controller
     public function store(Request $request)
     {
         $validator = validator($request->all(), [
-            'name' => ['required','string','max:255'],
             'username' => ['required','string','max:255','unique:users,username'],
             'email' => ['required','string','max:255','unique:users,email'],
             'password' => ['required','string','min:8','max:255','confirmed']
@@ -108,7 +107,6 @@ class AccountController extends Controller
     public function update(Request $request, $id)
     {
         $validator = validator($request->all(), [
-            'name' => ['nullable','string','max:255'],
             'username' => ['nullable','string','max:255','unique:users,username'],
             'email' => ['nullable','string','max:255','unique:users,email']
         ]);
@@ -159,7 +157,7 @@ class AccountController extends Controller
                 'message' => 'user not found in our database'
             ], 404);
         }
-        
+
         $user->delete();
 
         $users = User::get();
