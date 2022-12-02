@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AccountController;
+use App\Http\Controllers\Api\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,10 +32,12 @@ Route::middleware('auth:sanctum')->group(function() {
     // User Route
     Route::prefix('user')->group(function() {
         Route::apiResource('account', AccountController::class, ['only' => ['index']]);
+        Route::apiResource('transaction', TransactionController::class, ['only' => ['index','show']]);
     });
 
     // Admin Route
     Route::prefix('admin')->group(function() {
         Route::apiResource('account', AccountController::class);
+        Route::apiResource('transaction', TransactionController::class);
     });
 });
