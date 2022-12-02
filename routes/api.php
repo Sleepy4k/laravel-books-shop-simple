@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,11 @@ Route::post('register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function() {
     Route::post('logout', [AuthController::class, 'logout']);
     
+    // User Route
+    Route::prefix('user')->group(function() {
+        Route::apiResource('account', AccountController::class, ['only' => ['index']]);
+    });
+
     // Admin Route
     Route::prefix('admin')->group(function() {
         Route::apiResource('account', AccountController::class);
