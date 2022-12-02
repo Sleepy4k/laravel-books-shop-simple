@@ -20,7 +20,7 @@ class TransactionFactory extends Factory
             'user_id' => rand(1,10),
             'book_id' => rand(1,10),
             'quantity' => rand(1,5),
-            'total_payment' => rand(10,100) . '000',
+            'total_payment' => rand(50,250) . '000',
             'payment_date' => fake()->dateTimeBetween('2022-11-01', now()->format('Y-m-d'))
         ];
     }
