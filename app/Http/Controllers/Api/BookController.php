@@ -12,6 +12,7 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function index()
@@ -43,6 +44,15 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $validator = validator($request->all(), [
             'name' => ['nullable','string','max:255','unique:books,name'],
             'description' => ['nullable','string'],
@@ -118,6 +128,15 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $validator = validator($request->all(), [
             'name' => ['nullable','string','max:255','unique:books,name'],
             'description' => ['nullable','string'],
@@ -175,11 +194,21 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        if ($request->user()->is_admin == 'false') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $book = Book::find($id);
 
         if (!$book) {

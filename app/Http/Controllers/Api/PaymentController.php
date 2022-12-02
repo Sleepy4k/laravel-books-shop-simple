@@ -17,6 +17,15 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->user()->is_admin == 'true') {
+            return response()->json([
+                'code' => 202,
+                'status' => 'success',
+                'message' => 'data successfully accepted',
+                'data' => $request->user()
+            ], 202);
+        }
+
         $validator = validator($request->all(), [
             'book_id' => ['required','numeric'],
             'quantity' => ['required','numeric']
