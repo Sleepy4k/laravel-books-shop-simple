@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -18,7 +17,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = validator($request->all(), [
             'name' => ['required','string','max:255'],
             'username' => ['required','string','max:255','unique:users,username'],
             'email' => ['required','string','max:255','unique:users,email'],
@@ -34,7 +33,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $validated = $validator->getData();
+        $validated = $validator->validated();
 
         $validated['password'] = bcrypt($validated['password']);
 
@@ -56,7 +55,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = validator($request->all(), [
             'username' => ['required','string','max:255'],
             'password' => ['required','string','min:8','max:255']
         ]);
@@ -70,7 +69,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $validated = $validator->getData();
+        $validated = $validator->validated();
 
         $user = User::where('username', $validated['username'])->first();
 
@@ -110,9 +109,9 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        $user = auth('sanctum')->user();
+        $user = $request->user();
         $user->currentAccessToken()->delete();
 
         return response()->json([

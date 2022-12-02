@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
 {
@@ -43,7 +42,7 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = validator($request->all(), [
             'name' => ['required','string','max:255'],
             'username' => ['required','string','max:255','unique:users,username'],
             'email' => ['required','string','max:255','unique:users,email'],
@@ -59,7 +58,7 @@ class AccountController extends Controller
             ], 422);
         }
 
-        $validated = $validator->getData();
+        $validated = $validator->validated();
 
         $validated['password'] = bcrypt($validated['password']);
 
@@ -81,13 +80,13 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
 
         if (!$user) {
             return response()->json([
                 'code' => 404,
                 'status' => 'error',
-                'message' => 'data not found in our database'
+                'message' => 'user not found in our database'
             ], 404);
         }
 
@@ -108,7 +107,7 @@ class AccountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = validator($request->all(), [
             'name' => ['nullable','string','max:255'],
             'username' => ['nullable','string','max:255','unique:users,username'],
             'email' => ['nullable','string','max:255','unique:users,email']
@@ -124,7 +123,16 @@ class AccountController extends Controller
         }
 
         $user = User::find($id);
-        $user->update($validator->getData());
+        
+        if (!$user) {
+            return response()->json([
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'user not found in our database'
+            ], 404);
+        }
+
+        $user->update($validator->validated());
 
         return response()->json([
             'code' => 202,
@@ -142,7 +150,17 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        User::find($id)->delete();
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'user not found in our database'
+            ], 404);
+        }
+        
+        $user->delete();
 
         $users = User::get();
 
