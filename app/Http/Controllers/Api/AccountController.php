@@ -56,7 +56,7 @@ class AccountController extends Controller
             return response()->json([
                 'code' => 401,
                 'status' => 'error',
-                'message' => 'unauthenticated Access'
+                'message' => 'unauthenticated access'
             ], 401);
         }
 
@@ -102,7 +102,7 @@ class AccountController extends Controller
             return response()->json([
                 'code' => 401,
                 'status' => 'error',
-                'message' => 'unauthenticated Access'
+                'message' => 'unauthenticated access'
             ], 401);
         }
 
@@ -137,7 +137,7 @@ class AccountController extends Controller
             return response()->json([
                 'code' => 401,
                 'status' => 'error',
-                'message' => 'unauthenticated Access'
+                'message' => 'unauthenticated access'
             ], 401);
         }
 
@@ -188,7 +188,7 @@ class AccountController extends Controller
             return response()->json([
                 'code' => 401,
                 'status' => 'error',
-                'message' => 'unauthenticated Access'
+                'message' => 'unauthenticated access'
             ], 401);
         }
 

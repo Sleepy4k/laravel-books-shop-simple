@@ -20,6 +20,14 @@ class BookController extends Controller
         $books = Book::get();
 
         if (count($books) > 0) {
+            foreach ($books as $book) {
+                if (empty($book->image)) {
+                    unset($book->image);
+                } else {
+                    $book->image = config('app.url') . ':8000/storage/' . $book->image;
+                }
+            }
+
             return response()->json([
                 'code' => 202,
                 'status' => 'success',
@@ -46,11 +54,10 @@ class BookController extends Controller
     {
         if ($request->user()->is_admin == 'false') {
             return response()->json([
-                'code' => 202,
-                'status' => 'success',
-                'message' => 'data successfully accepted',
-                'data' => $request->user()
-            ], 202);
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated access'
+            ], 401);
         }
 
         $validator = validator($request->all(), [
@@ -85,6 +92,12 @@ class BookController extends Controller
 
         $book = Book::create($validated);
 
+        if (empty($book->image)) {
+            unset($book->image);
+        } else {
+            $book->image = config('app.url') . ':8000/storage/' . $book->image;
+        }
+
         return response()->json([
             'code' => 202,
             'status' => 'success',
@@ -110,6 +123,12 @@ class BookController extends Controller
                 'message' => 'book not found in our database'
             ], 404);
         }
+        
+        if (empty($book->image)) {
+            unset($book->image);
+        } else {
+            $book->image = config('app.url') . ':8000/storage/' . $book->image;
+        }
 
         return response()->json([
             'code' => 206,
@@ -130,11 +149,10 @@ class BookController extends Controller
     {
         if ($request->user()->is_admin == 'false') {
             return response()->json([
-                'code' => 202,
-                'status' => 'success',
-                'message' => 'data successfully accepted',
-                'data' => $request->user()
-            ], 202);
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated access'
+            ], 401);
         }
 
         $validator = validator($request->all(), [
@@ -183,6 +201,12 @@ class BookController extends Controller
 
         $book->update($validated);
 
+        if (empty($book->image)) {
+            unset($book->image);
+        } else {
+            $book->image = config('app.url') . ':8000/storage/' . $book->image;
+        }
+
         return response()->json([
             'code' => 202,
             'status' => 'success',
@@ -202,11 +226,10 @@ class BookController extends Controller
     {
         if ($request->user()->is_admin == 'false') {
             return response()->json([
-                'code' => 202,
-                'status' => 'success',
-                'message' => 'data successfully accepted',
-                'data' => $request->user()
-            ], 202);
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated access'
+            ], 401);
         }
 
         $book = Book::find($id);
@@ -230,6 +253,14 @@ class BookController extends Controller
         $books = Book::get();
 
         if (count($books) > 0) {
+            foreach ($books as $book) {
+                if (empty($book->image)) {
+                    unset($book->image);
+                } else {
+                    $book->image = config('app.url') . ':8000/storage/' . $book->image;
+                }
+            }
+
             return response()->json([
                 'code' => 202,
                 'status' => 'success',
