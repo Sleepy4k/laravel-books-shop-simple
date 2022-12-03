@@ -32,7 +32,7 @@ class Authenticate extends Middleware
             $response = response()->json([
                 'code' => 401,
                 'status' => 'error',
-                'message' => 'Unauthenticated Access'
+                'message' => 'token is invalid or may be expired'
             ], 401);
 
             abort($response);

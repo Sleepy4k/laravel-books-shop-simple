@@ -19,11 +19,10 @@ class PaymentController extends Controller
     {
         if ($request->user()->is_admin == 'true') {
             return response()->json([
-                'code' => 202,
-                'status' => 'success',
-                'message' => 'data successfully accepted',
-                'data' => $request->user()
-            ], 202);
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated access'
+            ], 401);
         }
 
         $validator = validator($request->all(), [
@@ -51,6 +50,19 @@ class PaymentController extends Controller
                 'message' => 'book not found in our database'
             ], 404);
         }
+
+        $stok = $book->stok - $validated['quantity'];
+
+        if ($stok < 0) {
+            return response()->json([
+                'code' => 406,
+                'status' => 'error',
+                'message' => 'book stok is running out',
+                'data' => $book
+            ], 406);
+        }
+
+        $book->update(['stok' => $stok]);
 
         $transaction = Transaction::create([
             'user_id' => $request->user()->id,

@@ -52,11 +52,10 @@ class TransactionController extends Controller
     {
         if ($request->user()->is_admin == 'false') {
             return response()->json([
-                'code' => 202,
-                'status' => 'success',
-                'message' => 'data successfully accepted',
-                'data' => $request->user()
-            ], 202);
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated access'
+            ], 401);
         }
 
         $validator = validator($request->all(), [
@@ -147,11 +146,10 @@ class TransactionController extends Controller
     {
         if ($request->user()->is_admin == 'false') {
             return response()->json([
-                'code' => 202,
-                'status' => 'success',
-                'message' => 'data successfully accepted',
-                'data' => $request->user()
-            ], 202);
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated access'
+            ], 401);
         }
 
         $validator = validator($request->all(), [
@@ -208,11 +206,10 @@ class TransactionController extends Controller
     {
         if ($request->user()->is_admin == 'false') {
             return response()->json([
-                'code' => 202,
-                'status' => 'success',
-                'message' => 'data successfully accepted',
-                'data' => $request->user()
-            ], 202);
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'unauthenticated access'
+            ], 401);
         }
 
         $transaction = Transaction::find($id);
